@@ -6,21 +6,21 @@ import 'package:cellula_task/core/styles/app_text_styels.dart';
 import 'package:cellula_task/core/utils/app_string.dart';
 import 'package:cellula_task/core/widgets/custom_button.dart';
 import 'package:cellula_task/core/widgets/custom_snackbar.dart';
+import 'package:cellula_task/core/widgets/custom_text_field.dart';
 import 'package:cellula_task/core/widgets/google_button.dart';
 import 'package:cellula_task/core/widgets/spacing_widgets.dart';
 import 'package:cellula_task/features/auth/presentation/controller/auth_cubit.dart';
 import 'package:cellula_task/features/auth/presentation/controller/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/widgets/custom_text_field.dart';
 
-class LoginScreen extends StatelessWidget {
+class SigninScreen extends StatelessWidget {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  LoginScreen({super.key});
+  SigninScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +39,15 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(AppStrings.welcomeBack, style: AppTextStyles.welcomeText),
+              Text("Welcome", style: AppTextStyles.welcomeText),
               const HeightSpace(32),
 
+              CustomTextField(
+                hintText: "Name",
+                controller: nameController,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const HeightSpace(16),
               CustomTextField(
                 hintText: AppStrings.email,
                 controller: emailController,
@@ -54,40 +60,24 @@ class LoginScreen extends StatelessWidget {
                 controller: passwordController,
                 isPassword: true,
               ),
-              const HeightSpace(8),
 
-              Align(
-                alignment: Alignment.bottomRight,
-                child: SizedBox(
-                  width: 200.w,
-                  child: BlocConsumer<AuthCubit, AuthState>(
-                    listener: (context, state) {},
-                    builder: (context, state) {
-                      return TextButton(
-                        onPressed: () {
-                          //TODO
-                        },
-                        child: Text(
-                          AppStrings.forgotPassword,
-                          style: AppTextStyles.forgotPassword,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              const HeightSpace(16),
+              const HeightSpace(25),
 
               BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
-                  if (state is EmailLoginSuccess) {
+                  if (state is EmailRegisterLoading) {
+                    const Center(child: CircularProgressIndicator());
+                  }
+                  if (state is EmailRegisterSuccess) {
                     CustomSnackBar.show(
                       context: context,
-                      message: 'Login successful!',
+                      message: 'Signin successful!',
                     );
-                    GoRouter.of(context).goNamed(AppRoutes.homeScreen);
+                    GoRouter.of(
+                      context,
+                    ).pushReplacementNamed(AppRoutes.homeScreen);
                   }
-                  if (state is EmailLoginFailure) {
+                  if (state is EmailRegisterFailure) {
                     CustomSnackBar.show(
                       context: context,
                       message: state.message,
@@ -96,17 +86,12 @@ class LoginScreen extends StatelessWidget {
                   }
                 },
                 builder: (context, state) {
-                  if (state is EmailLoginLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(color: AppColors.white),
-                    );
-                  }
                   return SizedBox(
                     child: CustomButton(
-                      text: AppStrings.login,
+                      text: "Create Account",
                       color: AppColors.primary,
                       onPressed: () {
-                        authCubit.loginWithEmail(
+                        authCubit.registerWithEmail(
                           emailController.text,
                           passwordController.text,
                         );
@@ -137,7 +122,7 @@ class LoginScreen extends StatelessWidget {
                       context: context,
                       message: 'Logged in with Google!',
                     );
-                    GoRouter.of(context).goNamed(AppRoutes.homeScreen);
+                    GoRouter.of(context).pushNamed(AppRoutes.homeScreen);
                   }
 
                   if (state is GoogleLoginFailure) {
@@ -151,28 +136,27 @@ class LoginScreen extends StatelessWidget {
                 },
                 builder: (context, state) {
                   return GoogleButton(
-                    text: "Login with google",
+                    text: "Signin with google",
                     onPressed: () {
                       authCubit.loginWithGoogle();
                     },
                   );
                 },
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Don't have an account?",
+                    "Already have an account?",
                     style: AppTextStyles.forgotPassword,
                   ),
                   TextButton(
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                     onPressed: () {
-                      GoRouter.of(context).pushNamed(AppRoutes.signinScreen);
+                      Navigator.pop(context);
                     },
                     child: const Text(
-                      "Sign Up",
+                      "Login",
                       style: TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
