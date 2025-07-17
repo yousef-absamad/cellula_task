@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomSnackBar {
   static void show({
@@ -18,7 +19,7 @@ class CustomSnackBar {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        margin:  EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
       ),
     );
   }

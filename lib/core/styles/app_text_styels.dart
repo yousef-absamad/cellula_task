@@ -3,15 +3,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTextStyles {
-  static final TextStyle welcomeText = GoogleFonts.poppins(
+  static final TextStyle headerStyle = GoogleFonts.poppins(
     fontSize: 28,
     fontWeight: FontWeight.bold,
-    color: AppColors.white,
+    color: AppColors.primary,
   );
 
-  static final TextStyle forgotPassword = GoogleFonts.poppins(
+  static final TextStyle primaryStyle = GoogleFonts.poppins(
     fontSize: 14,
-    color: AppColors.white,
+    color: AppColors.primary,
   );
 
   static final TextStyle buttonText = GoogleFonts.poppins(

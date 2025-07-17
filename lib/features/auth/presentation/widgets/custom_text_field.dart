@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:cellula_task/core/styles/app_colors.dart';
+import 'package:cellula_task/core/styles/app_text_styels.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextField extends StatefulWidget {
   final String hintText;
@@ -30,11 +34,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: widget.hintText,
-        labelStyle: const TextStyle(color: Colors.white70),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
-        ),
+        labelStyle: AppTextStyles.primaryStyle,
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
 
         suffixIcon: widget.isPassword
             ? IconButton(
@@ -50,16 +51,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
               )
             : null,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.white),
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: AppColors.primary),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.white),
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: AppColors.primary),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.white),
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: AppColors.primary),
         ),
       ),
     );

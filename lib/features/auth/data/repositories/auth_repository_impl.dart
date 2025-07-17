@@ -12,19 +12,27 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, UserEntity>> loginWithEmail(String email, String password) async {
+  Future<Either<Failure, UserEntity>> loginWithEmail(
+    String email,
+    String password,
+  ) async {
     try {
       final user = await remoteDataSource.loginWithEmail(email, password);
       return Right(user);
     } on FirebaseAuthException catch (e) {
       return Left(FirebaseFailure(e.message ?? 'Unknown Firebase error'));
+    } on GoogleSignInCancelledException {
+      return Left(UserCancelledFailure("User cancelled Google Sign-In"));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
 
   @override
-  Future<Either<Failure, UserEntity>> registerWithEmail(String email, String password) async {
+  Future<Either<Failure, UserEntity>> registerWithEmail(
+    String email,
+    String password,
+  ) async {
     try {
       final user = await remoteDataSource.registerWithEmail(email, password);
       return Right(user);
@@ -42,6 +50,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user);
     } on FirebaseAuthException catch (e) {
       return Left(FirebaseFailure(e.message ?? 'Unknown Firebase error'));
+    } on GoogleSignInCancelledException {
+      return Left(UserCancelledFailure("User cancelled Google Sign-In"));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
@@ -50,5 +60,15 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> logout() async {
     await remoteDataSource.logout();
+  }
+
+  @override
+  Future<Either<Failure, void>> sendResetPasswordEmail(String email) async {
+    try {
+      await remoteDataSource.sendResetPasswordEmail(email);
+      return const Right(null);
+    } catch (e) {
+      return left(ResetPasswordFailure("Failed to send reset email"));
+    }
   }
 }

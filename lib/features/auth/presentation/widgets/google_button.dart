@@ -2,7 +2,7 @@ import 'package:cellula_task/core/styles/app_text_styels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../styles/app_colors.dart';
+import '../../../../core/styles/app_colors.dart';
 
 class GoogleButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -25,7 +25,7 @@ class GoogleButton extends StatelessWidget {
         height: 55.h,
         width: double.infinity,
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.white),
+          border: Border.all(color: AppColors.primary),
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Row(
@@ -37,10 +37,7 @@ class GoogleButton extends StatelessWidget {
               width: 24.w,
             ),
             SizedBox(width: 12.w),
-            Text(
-              text,
-              style: AppTextStyles.buttonText,
-            ),
+            Text(text, style: AppTextStyles.buttonText),
           ],
         ),
       ),

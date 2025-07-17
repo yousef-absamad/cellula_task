@@ -5,6 +5,7 @@ abstract class AuthRemoteDataSource {
   Future<UserModel> registerWithEmail(String email, String password);
   Future<UserModel> loginWithGoogle();
   Future<void> logout();
+  Future<void> sendResetPasswordEmail(String email);
 }
 
 
