@@ -16,18 +16,20 @@ class AuthStateHandler {
   AuthStateHandler(this.context);
 
   Future<void> handleEmailLoginSuccess(EmailLoginSuccess state) async {
-    final userResult = await sl<GetUserDataUseCase>().execute(state.authUserEntity.uid);
-
-    userResult.fold(
-      (failure) => _showError(failure.message),
-      (userEntity) {
-        _showSuccess("Login successful!");
-        _navigate(userEntity);
-      },
+    final userResult = await sl<GetUserDataUseCase>().execute(
+      state.authUserEntity.uid,
     );
+
+    userResult.fold((failure) => _showError(failure.message), (userEntity) {
+      _showSuccess("Login successful!");
+      _navigate(userEntity);
+    });
   }
 
-  Future<void> handleEmailRegisterSuccess(EmailRegisterSuccess state, String name) async {
+  Future<void> handleEmailRegisterSuccess(
+    EmailRegisterSuccess state,
+    String name,
+  ) async {
     final user = UserModel(
       uid: state.authUserEntity.uid,
       name: name,
@@ -37,13 +39,10 @@ class AuthStateHandler {
 
     final saveResult = await sl<SaveUserDataUseCase>().execute(user);
 
-    saveResult.fold(
-      (failure) => _showError(failure.message),
-      (_) {
-        _showSuccess("Sign up successful!");
-        _navigate(user);
-      },
-    );
+    saveResult.fold((failure) => _showError(failure.message), (_) {
+      _showSuccess("Sign up successful!");
+      _navigate(user);
+    });
   }
 
   Future<void> handleGoogleLoginSuccess(GoogleLoginSuccess state) async {
@@ -56,13 +55,14 @@ class AuthStateHandler {
 
     final result = await sl<CheckAndSaveGoogleUserUsecase>().execute(user);
 
-    result.fold(
-      (failure) => _showError(failure.message),
-      (userEntity) {
-        _showSuccess("Logged in with Google!");
-        _navigate(userEntity);
-      },
-    );
+    result.fold((failure) => _showError(failure.message), (checkResult) {
+      if (checkResult.isNewUser) {
+        _showSuccess("Welcome! Your account has been created.");
+      } else {
+        _showSuccess("Welcome back!");
+      }
+      _navigate(checkResult.user);
+    });
   }
 
   void _showSuccess(String message) {
@@ -70,7 +70,11 @@ class AuthStateHandler {
   }
 
   void _showError(String message) {
-    CustomSnackBar.show(context: context, message: "Firestore: $message", isError: true);
+    CustomSnackBar.show(
+      context: context,
+      message: "Firestore: $message",
+      isError: true,
+    );
   }
 
   void _navigate(UserEntity user) {
