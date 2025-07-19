@@ -1,10 +1,10 @@
-class UserEntity {
+class AuthUserEntity {
   final String uid;
   final String? email;
   final String? name;
   final String? photoUrl;
 
-  const UserEntity({
+  const AuthUserEntity({
     required this.uid,
     this.email,
     this.name,

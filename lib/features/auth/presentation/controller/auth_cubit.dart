@@ -27,25 +27,28 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await loginWithEmailUseCase.execute(email, password);
     result.fold(
       (failure) => emit(EmailLoginFailure(failure.message)),
-      (user) => emit(EmailLoginSuccess(user)),
+      (authUserEntity) => emit(EmailLoginSuccess(authUserEntity)),
     );
   }
 
-  Future<void> registerWithEmail(String email, String password) async {
+  Future<void> registerWithEmail(
+    String email,
+    String password,
+  ) async {
     emit(EmailRegisterLoading());
     final result = await registerWithEmailUseCase.execute(email, password);
     result.fold(
       (failure) => emit(EmailRegisterFailure(failure.message)),
-      (user) => emit(EmailRegisterSuccess(user)),
+      (authUserEntity) => emit(EmailRegisterSuccess(authUserEntity)),
     );
   }
-
+ 
   Future<void> loginWithGoogle() async {
     emit(GoogleLoginLoading());
     final result = await loginWithGoogleUseCase.execute();
     result.fold(
       (failure) => emit(GoogleLoginFailure(failure.message)),
-      (user) => emit(GoogleLoginSuccess(user)),
+      (authUserEntity) => emit(GoogleLoginSuccess(authUserEntity)),
     );
   }
 

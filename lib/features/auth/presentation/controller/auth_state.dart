@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:cellula_task/features/auth/domain/entities/user_entity.dart';
+import 'package:cellula_task/features/auth/domain/entities/auth_user_entity.dart';
 
 abstract class AuthState extends Equatable {
   const AuthState();
@@ -13,12 +13,12 @@ class AuthInitial extends AuthState {}
 class EmailLoginLoading extends AuthState {}
 
 class EmailLoginSuccess extends AuthState {
-  final UserEntity user;
+  final AuthUserEntity authUserEntity;
 
-  const EmailLoginSuccess(this.user);
+  const EmailLoginSuccess(this.authUserEntity);
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [authUserEntity];
 }
 
 class EmailLoginFailure extends AuthState {
@@ -33,12 +33,12 @@ class EmailLoginFailure extends AuthState {
 class EmailRegisterLoading extends AuthState {}
 
 class EmailRegisterSuccess extends AuthState {
-  final UserEntity user;
+  final AuthUserEntity authUserEntity;
 
-  const EmailRegisterSuccess(this.user);
+  const EmailRegisterSuccess(this.authUserEntity);
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [authUserEntity];
 }
 
 class EmailRegisterFailure extends AuthState {
@@ -53,12 +53,12 @@ class EmailRegisterFailure extends AuthState {
 class GoogleLoginLoading extends AuthState {}
 
 class GoogleLoginSuccess extends AuthState {
-  final UserEntity user;
+  final AuthUserEntity authUserEntity;
 
-  const GoogleLoginSuccess(this.user);
+  const GoogleLoginSuccess(this.authUserEntity);
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [authUserEntity];
 }
 
 class GoogleLoginFailure extends AuthState {

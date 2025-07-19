@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../../core/error/failure.dart';
-import '../../domain/entities/user_entity.dart';
+import '../../domain/entities/auth_user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
 
@@ -12,7 +12,7 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, UserEntity>> loginWithEmail(
+  Future<Either<Failure, AuthUserEntity>> loginWithEmail(
     String email,
     String password,
   ) async {
@@ -29,7 +29,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> registerWithEmail(
+  Future<Either<Failure, AuthUserEntity>> registerWithEmail(
     String email,
     String password,
   ) async {
@@ -44,7 +44,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> loginWithGoogle() async {
+  Future<Either<Failure, AuthUserEntity>> loginWithGoogle() async {
     try {
       final user = await remoteDataSource.loginWithGoogle();
       return Right(user);

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cellula_task/core/styles/app_colors.dart';
 import 'package:cellula_task/core/styles/app_text_styels.dart';
 import 'package:flutter/material.dart';
