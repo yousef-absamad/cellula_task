@@ -31,10 +31,7 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> registerWithEmail(
-    String email,
-    String password,
-  ) async {
+  Future<void> registerWithEmail(String email, String password) async {
     emit(EmailRegisterLoading());
     final result = await registerWithEmailUseCase.execute(email, password);
     result.fold(
@@ -42,7 +39,7 @@ class AuthCubit extends Cubit<AuthState> {
       (authUserEntity) => emit(EmailRegisterSuccess(authUserEntity)),
     );
   }
- 
+
   Future<void> loginWithGoogle() async {
     emit(GoogleLoginLoading());
     final result = await loginWithGoogleUseCase.execute();
@@ -53,8 +50,10 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> logout() async {
+    emit(LogoutLoading());
     await logoutUseCase.execute();
-    emit(AuthInitial());
+    if (isClosed) return;
+    emit(LogoutSuccess());
   }
 
   Future<void> sendResetPasswordEmail(String email) async {
