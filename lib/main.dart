@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:cellula_task/core/routing/routes_generation_config.dart';
 import 'package:cellula_task/core/services/services_locator.dart';
 import 'package:cellula_task/firebase_options.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,14 +9,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   ServicesLocator().init();
-
-  final isLoggedIn = FirebaseAuth.instance.currentUser != null;
-  if (isLoggedIn) {
-    log("currentUser is LoggedIn");
-  } else {
-    log("currentUser is sinut");
-  }
-
   runApp(const MyApp());
 }
 
