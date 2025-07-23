@@ -2,32 +2,24 @@ import 'package:cellula_task/core/routing/app_routes.dart';
 import 'package:cellula_task/core/services/request_state.dart';
 import 'package:cellula_task/core/styles/app_colors.dart';
 import 'package:cellula_task/core/widgets/spacing_widgets.dart';
+import 'package:cellula_task/features/ai_suggestion/presentation/controller/suggestion_cubit.dart';
 import 'package:cellula_task/features/user/domain/entities/user_entity.dart';
 import 'package:cellula_task/features/weather/domain/Entity/forecast_weather.dart';
 import 'package:cellula_task/features/weather/presentation/Controller/weather_cubit.dart';
 import 'package:cellula_task/features/weather/presentation/Controller/weather_state.dart';
+import 'package:cellula_task/features/weather/presentation/widgets/ai_suggestion.dart';
 import 'package:cellula_task/features/weather/presentation/widgets/error_with_retry.dart';
 import 'package:cellula_task/features/weather/presentation/widgets/forecast_card.dart';
 import 'package:cellula_task/features/weather/presentation/widgets/select_location.dart';
 import 'package:cellula_task/features/weather/presentation/widgets/user_profile_header.dart';
 import 'package:cellula_task/features/weather/presentation/widgets/current_weather_card_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class WeatherScreen extends StatelessWidget {
   final UserEntity userEntity;
   const WeatherScreen({super.key, required this.userEntity});
-
-  void _logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    await GoogleSignIn().signOut();
-    //if (!context.mounted) return;
-    GoRouter.of(context).goNamed(AppRoutes.loginScreen);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +37,7 @@ class WeatherScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                UserProfileHeader(
-                  userEntity: userEntity,
-                  onLogout: () => _logout(context),
-                ),
-
+                UserProfileHeader(userEntity: userEntity),
                 const HeightSpace(50),
                 BlocBuilder<WeatherCubit, WeatherState>(
                   buildWhen: (previous, current) =>
@@ -113,11 +101,22 @@ class WeatherScreen extends StatelessWidget {
                     return Center();
                   },
                 ),
-                HeightSpace(50),
-                BlocBuilder<WeatherCubit, WeatherState>(
+                HeightSpace(30),
+                BlocConsumer<WeatherCubit, WeatherState>(
                   buildWhen: (previous, current) =>
                       previous.currentWeatherStatus !=
                       current.currentWeatherStatus,
+                  listenWhen: (previous, current) =>
+                      previous.currentWeatherStatus !=
+                      current.currentWeatherStatus,
+                  listener: (context, state) {
+                    if (state.currentWeatherStatus == RequestStatus.loaded) {
+                      context.read<SuggestionCubit>().getSuggestion(
+                        state.currentWeather!,
+                        userEntity.name,
+                      );
+                    }
+                  },
                   builder: (context, state) {
                     if (state.currentWeatherStatus == RequestStatus.loading) {
                       return SizedBox(
@@ -136,10 +135,14 @@ class WeatherScreen extends StatelessWidget {
                         RequestStatus.error) {
                       return ErrorWithRetry(
                         height: 0.5,
-                        errorMessage: state.forecastWeatherError!,
+                        errorMessage: state.currentWeatherError!,
                         onPressed: () {
                           context.read<WeatherCubit>().fetchCurrentWeather(
                             "Cairo",
+                          );
+                          context.read<SuggestionCubit>().getSuggestion(
+                            state.currentWeather!,
+                            userEntity.name,
                           );
                         },
                       );
@@ -152,6 +155,7 @@ class WeatherScreen extends StatelessWidget {
             ),
           ),
         ),
+        floatingActionButton: AISuggestion(),
       ),
     );
   }

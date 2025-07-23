@@ -1,17 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cellula_task/core/routing/app_routes.dart';
+import 'package:cellula_task/core/services/services_locator.dart';
+import 'package:cellula_task/core/styles/app_colors.dart';
 import 'package:cellula_task/core/widgets/spacing_widgets.dart';
+import 'package:cellula_task/features/auth/presentation/controller/auth_cubit.dart';
+import 'package:cellula_task/features/auth/presentation/controller/auth_state.dart';
 import 'package:cellula_task/features/user/domain/entities/user_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class UserProfileHeader extends StatelessWidget {
   final UserEntity userEntity;
-  final VoidCallback onLogout;
-
   const UserProfileHeader({
     super.key,
     required this.userEntity,
-    required this.onLogout,
   });
 
   @override
@@ -66,10 +70,27 @@ class UserProfileHeader extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-            onPressed: onLogout,
+          BlocProvider(
+            create: (context) => sl<AuthCubit>(),
+            child: BlocBuilder<AuthCubit, AuthState>(
+              buildWhen: (previous, current) =>
+                  current is LogoutLoading || current is LogoutSuccess,
+              builder: (context, state) {
+                if (state is LogoutLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(color: AppColors.black),
+                  );
+                }
+                return IconButton(
+                  icon: const Icon(Icons.logout),
+                  tooltip: 'Logout',
+                  onPressed: () {
+                    context.read<AuthCubit>().logout();
+                    GoRouter.of(context).goNamed(AppRoutes.loginScreen);
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
